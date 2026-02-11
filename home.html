@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RankNotes</title>
+  <meta name="description" content="Notes on SEO, AI content, and search rankings.">
+  <link rel="canonical" href="https://{{DOMAIN}}/">
+  <meta property="og:title" content="RankNotes">
+  <meta property="og:description" content="Notes on SEO, AI content, and search rankings.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://{{DOMAIN}}/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0a0a0a;
+      color: #e0e0e0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 17px;
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    header {
+      border-bottom: 2px solid #333;
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .site-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .post-list {
+      list-style: none;
+    }
+
+    .post-list li {
+      margin-bottom: 2rem;
+    }
+
+    .post-list a {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .post-list a:hover {
+      color: #ccc;
+    }
+
+    .post-date {
+      color: #666;
+      font-size: 14px;
+      margin-top: 0.3rem;
+    }
+
+    .post-desc {
+      color: #888;
+      font-size: 15px;
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      border-top: 2px solid #333;
+      margin-top: 3rem;
+      padding-top: 1rem;
+      color: #444;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="site-name">RankNotes</div>
+    </header>
+
+    <ul class="post-list">
+{{POST_LIST}}
+    </ul>
+
+    <footer>
+      &copy; 2026 RankNotes
+    </footer>
+  </div>
+</body>
+</html>
