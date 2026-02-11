@@ -224,7 +224,12 @@ def main():
         posts.append(meta)
 
     domain = posts[0]["domain"] if posts else None
-    featured_post = posts[0]  # First post is featured
+
+    # Find featured post (first one with featured: true, or fallback to first post)
+    featured_post = next(
+        (p for p in posts if p.get("featured", "").lower() == "true"),
+        posts[0]
+    )
 
     # Second pass: build each post with navigation context
     for i, md in enumerate(md_files):

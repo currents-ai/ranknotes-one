@@ -4,6 +4,7 @@ slug: does-google-detect-ai-content
 description: A deep look at how Google identifies AI-generated content and what it means for your SEO strategy in 2026.
 date: February 10, 2026
 domain: ranknotes-one.com
+featured: true
 ---
 
 The question every content creator is asking right now: can Google actually tell if your blog post was written by an AI? The answer is more nuanced than most SEO gurus want to admit.
