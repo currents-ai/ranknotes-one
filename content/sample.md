@@ -8,7 +8,7 @@ domain: ranknotes-one.com
 
 The question every content creator is asking right now: can Google actually tell if your blog post was written by an AI? The answer is more nuanced than most SEO gurus want to admit.
 
-## What We Know So Far
+## What We Know So Far!
 
 Google has been deliberately vague about its AI detection capabilities. In official statements, the company says it focuses on content quality rather than origin. But behavior in the SERPs tells a different story.
 
