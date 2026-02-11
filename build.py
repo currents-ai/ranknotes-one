@@ -49,7 +49,45 @@ def estimate_read_time(text):
     return max(1, math.ceil(words / 250))
 
 
-def build_post(md_path, template, out_dir):
+def get_snippet(description, max_len=100):
+    """Get a short snippet from description."""
+    if len(description) <= max_len:
+        return description
+    return description[:max_len].rsplit(' ', 1)[0] + "..."
+
+
+def build_post_nav(prev_post, next_post):
+    """Generate navigation HTML for prev/next posts."""
+    nav_items = []
+
+    if prev_post:
+        snippet = get_snippet(prev_post["description"])
+        nav_items.append(
+            f'      <div class="post-nav-item prev">\n'
+            f'        <div class="post-nav-label">Previous</div>\n'
+            f'        <a href="/{prev_post["slug"]}/" class="post-nav-title">{prev_post["title"]}</a>\n'
+            f'        <div class="post-nav-snippet">{snippet}</div>\n'
+            f'      </div>'
+        )
+    else:
+        nav_items.append('      <div class="post-nav-item prev"></div>')
+
+    if next_post:
+        snippet = get_snippet(next_post["description"])
+        nav_items.append(
+            f'      <div class="post-nav-item next">\n'
+            f'        <div class="post-nav-label">Next</div>\n'
+            f'        <a href="/{next_post["slug"]}/" class="post-nav-title">{next_post["title"]}</a>\n'
+            f'        <div class="post-nav-snippet">{snippet}</div>\n'
+            f'      </div>'
+        )
+    else:
+        nav_items.append('      <div class="post-nav-item next"></div>')
+
+    return "\n".join(nav_items)
+
+
+def build_post(md_path, template, out_dir, all_posts, post_index, featured_post):
     with open(md_path, "r") as f:
         raw = f.read()
 
@@ -64,6 +102,12 @@ def build_post(md_path, template, out_dir):
     body_html = markdown.markdown(body_md, extensions=["extra", "smarty"])
     read_time = str(estimate_read_time(body_md))
 
+    # Determine prev/next posts
+    prev_post = all_posts[post_index - 1] if post_index > 0 else None
+    next_post = all_posts[post_index + 1] if post_index < len(all_posts) - 1 else None
+
+    post_nav = build_post_nav(prev_post, next_post)
+
     html = template
     html = html.replace("{{TITLE}}", meta["title"])
     html = html.replace("{{META_DESCRIPTION}}", meta["description"])
@@ -72,6 +116,10 @@ def build_post(md_path, template, out_dir):
     html = html.replace("{{DATE}}", meta["date"])
     html = html.replace("{{READ_TIME}}", read_time)
     html = html.replace("{{CONTENT}}", body_html)
+    html = html.replace("{{POST_NAV}}", post_nav)
+    html = html.replace("{{FEATURED_SLUG}}", featured_post["slug"])
+    html = html.replace("{{FEATURED_TITLE}}", featured_post["title"])
+    html = html.replace("{{FEATURED_SNIPPET}}", get_snippet(featured_post["description"]))
 
     post_dir = os.path.join(out_dir, meta["slug"])
     os.makedirs(post_dir, exist_ok=True)
@@ -165,12 +213,22 @@ def main():
     os.makedirs(args.out, exist_ok=True)
 
     print(f"Building {len(md_files)} post(s)...")
+
+    # First pass: parse all posts to get metadata
     posts = []
-    domain = None
     for md in md_files:
-        meta = build_post(md, post_template, args.out)
+        with open(md, "r") as f:
+            raw = f.read()
+        meta, _ = parse_frontmatter(raw)
+        meta["_path"] = md
         posts.append(meta)
-        domain = meta["domain"]
+
+    domain = posts[0]["domain"] if posts else None
+    featured_post = posts[0]  # First post is featured
+
+    # Second pass: build each post with navigation context
+    for i, md in enumerate(md_files):
+        build_post(md, post_template, args.out, posts, i, featured_post)
 
     build_homepage(posts, home_template, domain, args.out)
     build_robots(domain, args.out)
