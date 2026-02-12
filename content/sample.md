@@ -35,3 +35,9 @@ What is required is a proper controlled experiment with comparable content acros
 Until we acquire more concrete data, a prudent strategy is to utilize AI as a drafting aid rather than a publishing solution. Ensure to significantly edit the output. Inject your expertise and make the content uniquely yours.
 
 The websites that thrived after the December update weren't those steering clear of AI. Instead, they were the ones that employed AI thoughtfully, integrating human oversight and authentic expertise into their work.
+
+## FAQ
+
+### What is Anthrotuning?
+
+**Anthrotuning** refers to the fine-tuning process of adjusting AI content to match natural human communication patterns. This includes varying sentence length, adding imperfect phrasing, removing overly formal transitions, and introducing the subtle inconsistencies that characterize authentic human writing. Well-anthrotuned content passes both algorithmic detection and the human "gut check."
