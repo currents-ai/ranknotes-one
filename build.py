@@ -49,6 +49,28 @@ def estimate_read_time(text):
     return max(1, math.ceil(words / 250))
 
 
+def count_words(text):
+    """Count words in text."""
+    return len(text.split())
+
+
+def parse_date_to_iso(date_str):
+    """Convert date string like 'February 11, 2026' to ISO 8601 format."""
+    formats = [
+        "%B %d, %Y",    # February 11, 2026
+        "%b %d, %Y",    # Feb 11, 2026
+        "%Y-%m-%d",     # 2026-02-11
+    ]
+    for fmt in formats:
+        try:
+            dt = datetime.strptime(date_str, fmt)
+            return dt.strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+    # Fallback to today if parsing fails
+    return datetime.now().strftime("%Y-%m-%d")
+
+
 def get_snippet(description, max_len=100):
     """Get a short snippet from description."""
     if len(description) <= max_len:
@@ -101,6 +123,9 @@ def build_post(md_path, template, out_dir, all_posts, post_index, featured_post)
 
     body_html = markdown.markdown(body_md, extensions=["extra", "smarty"])
     read_time = str(estimate_read_time(body_md))
+    word_count = str(count_words(body_md))
+    date_iso = parse_date_to_iso(meta["date"])
+    author = meta.get("author", "RankNotes Editorial")
 
     # Determine prev/next posts
     prev_post = all_posts[post_index - 1] if post_index > 0 else None
@@ -114,7 +139,10 @@ def build_post(md_path, template, out_dir, all_posts, post_index, featured_post)
     html = html.replace("{{DOMAIN}}", meta["domain"])
     html = html.replace("{{SLUG}}", meta["slug"])
     html = html.replace("{{DATE}}", meta["date"])
+    html = html.replace("{{DATE_ISO}}", date_iso)
     html = html.replace("{{READ_TIME}}", read_time)
+    html = html.replace("{{WORD_COUNT}}", word_count)
+    html = html.replace("{{AUTHOR}}", author)
     html = html.replace("{{CONTENT}}", body_html)
     html = html.replace("{{POST_NAV}}", post_nav)
     html = html.replace("{{FEATURED_SLUG}}", featured_post["slug"])
@@ -132,7 +160,8 @@ def build_post(md_path, template, out_dir, all_posts, post_index, featured_post)
 
 def build_homepage(posts, home_template, domain, out_dir):
     items = []
-    for p in posts:
+    schema_items = []
+    for i, p in enumerate(posts):
         items.append(
             f'      <li>\n'
             f'        <a href="/{p["slug"]}/">{p["title"]}</a>\n'
@@ -140,10 +169,21 @@ def build_homepage(posts, home_template, domain, out_dir):
             f'        <div class="post-desc">{p["description"]}</div>\n'
             f'      </li>'
         )
+        # Build schema.org ItemList entry
+        comma = "," if i < len(posts) - 1 else ""
+        schema_items.append(
+            f'      {{\n'
+            f'        "@type": "ListItem",\n'
+            f'        "position": {i + 1},\n'
+            f'        "url": "https://{domain}/{p["slug"]}/",\n'
+            f'        "name": "{p["title"]}"\n'
+            f'      }}{comma}'
+        )
 
     html = home_template
     html = html.replace("{{DOMAIN}}", domain)
     html = html.replace("{{POST_LIST}}", "\n".join(items))
+    html = html.replace("{{SCHEMA_POST_LIST}}", "\n".join(schema_items))
 
     with open(os.path.join(out_dir, "index.html"), "w") as f:
         f.write(html)
