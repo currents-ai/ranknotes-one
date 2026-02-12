@@ -19,6 +19,7 @@ import glob
 import math
 import os
 import re
+import shutil
 import sys
 from datetime import datetime
 
@@ -230,6 +231,21 @@ def build_cname(domain, out_dir):
     print("  CNAME")
 
 
+def copy_static_files(out_dir):
+    static_dir = os.path.join(SCRIPT_DIR, "static")
+    if not os.path.isdir(static_dir):
+        return
+    for item in os.listdir(static_dir):
+        src = os.path.join(static_dir, item)
+        dst = os.path.join(out_dir, item)
+        if os.path.isfile(src):
+            shutil.copy2(src, dst)
+            print(f"  {item}")
+        elif os.path.isdir(src):
+            shutil.copytree(src, dst, dirs_exist_ok=True)
+            print(f"  {item}/")
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Build static site from markdown")
@@ -279,6 +295,7 @@ def main():
     build_robots(domain, args.out)
     build_sitemap(posts, domain, args.out)
     build_cname(domain, args.out)
+    copy_static_files(args.out)
     print("Done.")
 
 
