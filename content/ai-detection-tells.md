@@ -1,6 +1,6 @@
 ---
 title: Workings of AI Detectors -The Hidden Tells Used To Flag Your Writing
-slug: ai-detection-tells
+slug: patterns-trigger-ai-detectors
 description: Know about the patterns that trigger AI detection tools - and learn to remove them from your writing
 date: February 14, 2026
 domain: ranknotes-one.com
